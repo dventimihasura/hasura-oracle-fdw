@@ -1,0 +1,45 @@
+version: "3.6"
+
+services:
+  oracle:
+    image: gvenzl/oracle-xe:21.3.0-slim
+    restart: always
+    environment:
+      APP_USER: chinook
+      APP_USER_PASSWORD: Password#123
+      ORACLE_DATABASE: chinook
+      ORACLE_PASSWORD: oracle
+    ports:
+      - ${ORAPORT:-1522}:1521
+    volumes:
+      - ./init_oracle:/container-entrypoint-initdb.d
+      - ./healthcheck.sh:/healthcheck.sh
+    healthcheck:
+      test: [ "CMD", "./healthcheck.sh"]
+      start_period: 30s
+  postgres:
+    build: .
+    ports:
+      - ${PGPORT:-5433}:5432
+    restart: always
+    volumes:
+      - ./init_postgres:/docker-entrypoint-initdb.d
+    environment:
+      POSTGRES_PASSWORD: postgres
+    depends_on:
+      oracle:
+        condition: service_healthy
+  graphql-engine:
+    image: hasura/graphql-engine:v2.38.0.cli-migrations-v3
+    ports:
+      - ${HGEPORT:-8081}:8080
+    depends_on:
+      - postgres
+    restart: always
+    volumes:
+      - ./metadata:/hasura-metadata
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:postgres@postgres:5432/postgres
+      HASURA_GRAPHQL_DEV_MODE: true
+      HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
+      HASURA_GRAPHQL_ENABLE_CONSOLE: true

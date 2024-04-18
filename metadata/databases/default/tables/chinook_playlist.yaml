@@ -1,0 +1,13 @@
+table:
+  name: playlist
+  schema: chinook
+array_relationships:
+  - name: playlisttracks
+    using:
+      manual_configuration:
+        column_mapping:
+          playlistid: playlistid
+        insertion_order: null
+        remote_table:
+          name: playlisttrack
+          schema: chinook

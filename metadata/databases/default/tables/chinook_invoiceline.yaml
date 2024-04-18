@@ -1,0 +1,22 @@
+table:
+  name: invoiceline
+  schema: chinook
+object_relationships:
+  - name: invoice
+    using:
+      manual_configuration:
+        column_mapping:
+          invoiceid: invoiceid
+        insertion_order: null
+        remote_table:
+          name: invoice
+          schema: chinook
+  - name: track
+    using:
+      manual_configuration:
+        column_mapping:
+          trackid: trackid
+        insertion_order: null
+        remote_table:
+          name: track
+          schema: chinook

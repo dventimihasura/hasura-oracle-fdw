@@ -1,0 +1,13 @@
+table:
+  name: mediatype
+  schema: chinook
+object_relationships:
+  - name: tracks
+    using:
+      manual_configuration:
+        column_mapping:
+          mediatypeid: mediatypeid
+        insertion_order: null
+        remote_table:
+          name: track
+          schema: chinook

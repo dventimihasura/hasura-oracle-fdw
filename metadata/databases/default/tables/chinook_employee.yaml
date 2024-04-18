@@ -1,0 +1,32 @@
+table:
+  name: employee
+  schema: chinook
+object_relationships:
+  - name: manager
+    using:
+      manual_configuration:
+        column_mapping:
+          reportsto: employeeid
+        insertion_order: null
+        remote_table:
+          name: employee
+          schema: chinook
+array_relationships:
+  - name: customers
+    using:
+      manual_configuration:
+        column_mapping:
+          employeeid: supportrepid
+        insertion_order: null
+        remote_table:
+          name: customer
+          schema: chinook
+  - name: reports
+    using:
+      manual_configuration:
+        column_mapping:
+          employeeid: reportsto
+        insertion_order: null
+        remote_table:
+          name: employee
+          schema: chinook

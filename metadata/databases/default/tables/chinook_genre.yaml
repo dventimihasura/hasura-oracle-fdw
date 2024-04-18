@@ -1,0 +1,13 @@
+table:
+  name: genre
+  schema: chinook
+array_relationships:
+  - name: tracks
+    using:
+      manual_configuration:
+        column_mapping:
+          genreid: genreid
+        insertion_order: null
+        remote_table:
+          name: track
+          schema: chinook

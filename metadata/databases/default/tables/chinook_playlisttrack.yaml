@@ -1,0 +1,22 @@
+table:
+  name: playlisttrack
+  schema: chinook
+object_relationships:
+  - name: playlist
+    using:
+      manual_configuration:
+        column_mapping:
+          playlistid: playlistid
+        insertion_order: null
+        remote_table:
+          name: playlist
+          schema: chinook
+  - name: track
+    using:
+      manual_configuration:
+        column_mapping:
+          trackid: trackid
+        insertion_order: null
+        remote_table:
+          name: track
+          schema: chinook

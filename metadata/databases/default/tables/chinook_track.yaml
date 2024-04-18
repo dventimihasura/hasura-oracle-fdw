@@ -1,0 +1,50 @@
+table:
+  name: track
+  schema: chinook
+object_relationships:
+  - name: album
+    using:
+      manual_configuration:
+        column_mapping:
+          albumid: albumid
+        insertion_order: null
+        remote_table:
+          name: album
+          schema: chinook
+  - name: genre
+    using:
+      manual_configuration:
+        column_mapping:
+          genreid: genreid
+        insertion_order: null
+        remote_table:
+          name: genre
+          schema: chinook
+  - name: mediatype
+    using:
+      manual_configuration:
+        column_mapping:
+          mediatypeid: mediatypeid
+        insertion_order: null
+        remote_table:
+          name: mediatype
+          schema: chinook
+array_relationships:
+  - name: invoicelines
+    using:
+      manual_configuration:
+        column_mapping:
+          trackid: trackid
+        insertion_order: null
+        remote_table:
+          name: invoiceline
+          schema: chinook
+  - name: playlisttracks
+    using:
+      manual_configuration:
+        column_mapping:
+          trackid: trackid
+        insertion_order: null
+        remote_table:
+          name: playlisttrack
+          schema: chinook

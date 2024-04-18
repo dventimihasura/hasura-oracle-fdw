@@ -1,0 +1,5 @@
+/2248/sdk/
+*.zip
+scratch*.*
+*.env
+*.DS_Store
