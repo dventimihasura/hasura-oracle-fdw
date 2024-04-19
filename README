@@ -106,7 +106,7 @@ or
 ** Step 6:  Test the API
 
 #+begin_src graphql :url http://localhost:8081/v1/graphql
-  query MyQuery {
+query MyQuery {
   chinook_customer(limit: 1) {
     email
     supportrep {
