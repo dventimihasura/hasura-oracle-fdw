@@ -22,9 +22,6 @@ RUN alien --scripts oracle-instantclient19.23-devel-19.23.0.0.0-1.x86_64.rpm
 RUN dpkg -i oracle-instantclient19.23-basic_19.23.0.0.0-2_amd64.deb
 RUN dpkg -i oracle-instantclient19.23-devel_19.23.0.0.0-2_amd64.deb 
 
-# USER postgres
-# WORKDIR /home/postgres
-
 RUN wget --no-check-certificate https://github.com/laurenz/oracle_fdw/archive/refs/tags/ORACLE_FDW_2_6_0.zip
 RUN unzip ORACLE_FDW_2_6_0.zip
 

@@ -1,11 +1,101 @@
 # -*- mode: org; -*-
 
+#+STARTUP: indent
+
 * What
+
+This Proof-Of-Concept (POC) project combines [[https://hasura.io/][Hasura]] with [[https://www.postgresql.org/][PostgreSQL]]
+and the [[https://github.com/laurenz/oracle_fdw][oracle_fdw]] [[https://www.postgresql.org/docs/current/ddl-foreign-data.html][Foreign Data Wrapper]] in order to access an [[https://www.oracle.com/][Oracle]]
+database. 
 
 * Why
 
+While Hasura v2 [[https://hasura.io/docs/latest/databases/oracle/index/][has]] an Oracle [[https://hasura.io/docs/latest/databases/data-connectors/][data connector agent]], it has serious
+limitations and is missing these features.
+
+** Mutations
+
+- ❌ Upsert
+
+** Subscriptions
+
+- ❌ Value of Field
+- ❌ Updates to Rows
+- ❌ Value of Derived Field
+- ❌ Streaming Subscriptions
+  
+** Event Triggers
+
+- ❌ INSERT
+- ❌ UPDATE
+- ❌ DELETE
+- ❌ MANUAL
+
+While PostgreSQL [[https://www.postgresql.org/docs/current/sql-createforeigntable.html][foreign tables]] are not a perfect substitute for
+conventional tables, they are very close.  Consequently, they appear
+to Hasura very much like conventional tables, so that most or evena
+all of the Hasura functionality listed above "just works"
+out-of-the-box. 
+
 * How
+
+This project has these important components:
+
+- [[file:Dockerfile][Dockerfile]] :: Docker build file that creates a Docker image from
+  [[https://hub.docker.com/layers/library/postgres/16.0/images/sha256-3648b6c2ac30de803a598afbaaef47851a6ee1795d74b4a5dcc09a22513b15c9][postgres:16]] with the [[https://github.com/laurenz/oracle_fdw][oracle_fdw]] extension installed.  **NOTE**:  The
+  build process downloads both the PostgreSQL extension and the
+  necessary Oracle libraries.  Therefore, internet access is required.
+- [[file:docker-compose.yaml][docker-compose.yaml]] :: Docker Compose file that launches three services:
+  - oracle :: [[https://www.oracle.com/database/technologies/appdev/xe.html][Oracle XE]] database cluster
+  - postgres :: [[https://www.postgresql.org/][PostgreSQL]] database cluster with ~oracle_fdw~ installed
+  - graphql-engine :: [[https://hasura.io/][Hasura]] GraphQL Engine with ~postgres~ for both
+    its data and its metadata
+- [[file:init_oracle/01_chinook.sql][01_chinook.sql]] :: the Chinook database for Oracle
+- [[file:init_postgres/01_postgres.sql][01_postgres.sql]] :: SQL script for PostgreSQL that installs the
+  ~oracle_fdw~ extension, creates the [[https://www.postgresql.org/docs/current/sql-createserver.html][foreign server]], creates the
+  [[https://www.postgresql.org/docs/current/sql-createusermapping.html][user-mapping]], and imports the [[https://www.postgresql.org/docs/current/sql-importforeignschema.html][foreign schema]].
+- [[file:README][metadata]] :: Hasura metadata directory which configures the GraphQL
+  API by tracking the foreign tables and setting up the necessary
+  relationships between them
 
 * Steps
 
-** Step 1
+** Step 1:  Clone this repository.
+
+#+begin_src bash
+  git clone https://github.com/dventimihasura/hasura-oracle-fdw.git
+#+end_src
+
+** Step 2:  Navigate to the local repository.
+
+#+begin_src bash
+  cd hasura-oracle-fdw
+#+end_src
+
+** Step 3:  Create a ~.env~ file.
+
+#+begin_src bash
+  cat <<EOF > .env
+  ORAPORT=<your exposed port for the Oracle DB>
+  PGPORT=<your exposed port for the PostgreSQL DB>
+  HGEPORT=<your exposed port for the Hasura API>
+  EOF
+#+end_src
+
+** Step 4:  Use Docker Compose to launch the services.
+
+#+begin_src bash
+  docker-compose up -d
+#+end_src
+
+or
+
+#+begin_src bash
+  docker compose up -d
+#+end_src
+
+** Step 5:  Open Hasura Console
+
+#+begin_src bash
+  hasura console
+#+end_src
