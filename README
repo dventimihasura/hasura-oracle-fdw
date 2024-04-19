@@ -54,7 +54,7 @@ This project has these important components:
 - [[file:init_postgres/01_postgres.sql][01_postgres.sql]] :: SQL script for PostgreSQL that installs the
   ~oracle_fdw~ extension, creates the [[https://www.postgresql.org/docs/current/sql-createserver.html][foreign server]], creates the
   [[https://www.postgresql.org/docs/current/sql-createusermapping.html][user-mapping]], and imports the [[https://www.postgresql.org/docs/current/sql-importforeignschema.html][foreign schema]].
-- [[file:README][metadata]] :: Hasura metadata directory which configures the GraphQL
+- [[file:metadata][metadata]] :: Hasura metadata directory which configures the GraphQL
   API by tracking the foreign tables and setting up the necessary
   relationships between them
 
