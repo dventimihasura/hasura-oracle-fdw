@@ -76,11 +76,13 @@ This project has these important components:
 
 #+begin_src bash
   cat <<EOF > .env
+  HGEPORT=<your exposed port for the Hasura API>
   ORAPORT=<your exposed port for the Oracle DB>
   PGPORT=<your exposed port for the PostgreSQL DB>
-  HGEPORT=<your exposed port for the Hasura API>
   EOF
 #+end_src
+
+#+RESULTS:
 
 ** Step 4:  Use Docker Compose to launch the services.
 
