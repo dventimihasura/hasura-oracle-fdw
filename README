@@ -76,6 +76,7 @@ This project has these important components:
 
 #+begin_src bash
   cat <<EOF > .env
+  HASURA_GRAPHQL_ENDPOINT=<your desired Hasura endpoint>
   HGEPORT=<your exposed port for the Hasura API>
   ORAPORT=<your exposed port for the Oracle DB>
   PGPORT=<your exposed port for the PostgreSQL DB>
@@ -101,3 +102,330 @@ or
 #+begin_src bash
   hasura console
 #+end_src
+
+** Step 6:  Test the API
+
+#+begin_src graphql :url http://localhost:8081/v1/graphql
+  query MyQuery {
+  chinook_customer(limit: 1) {
+    email
+    supportrep {
+      firstname
+      lastname
+      title
+    }
+    firstname
+    lastname
+    invoices {
+      total
+      invoicelines {
+        unitprice
+        quantity
+        track {
+          name
+          milliseconds
+          mediatype {
+            name
+          }
+          genre {
+            name
+          }
+          playlisttracks {
+            playlist {
+              name
+            }
+          }
+          album {
+            title
+            artist {
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+}
+#+end_src
+
+#+RESULTS:
+#+begin_example
+{
+  "data": {
+    "chinook_customer": [
+      {
+        "email": "luisg@embraer.com.br",
+        "supportrep": {
+          "firstname": "Jane",
+          "lastname": "Peacock",
+          "title": "Sales Support Agent"
+        },
+        "firstname": "Luís",
+        "lastname": "Gonçalves",
+        "invoices": [
+          {
+            "total": 13.86,
+            "invoicelines": {
+              "unitprice": 0.99,
+              "quantity": 1,
+              "track": {
+                "name": "Já Foi",
+                "milliseconds": 245681,
+                "mediatype": {
+                  "name": "MPEG audio file"
+                },
+                "genre": {
+                  "name": "World"
+                },
+                "playlisttracks": [
+                  {
+                    "playlist": {
+                      "name": "Music"
+                    }
+                  },
+                  {
+                    "playlist": {
+                      "name": "Music"
+                    }
+                  }
+                ],
+                "album": {
+                  "title": "Demorou...",
+                  "artist": {
+                    "name": "Mônica Marianno"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "total": 8.91,
+            "invoicelines": {
+              "unitprice": 0.99,
+              "quantity": 1,
+              "track": {
+                "name": "Pretty Persuasion",
+                "milliseconds": 229929,
+                "mediatype": {
+                  "name": "MPEG audio file"
+                },
+                "genre": {
+                  "name": "Alternative & Punk"
+                },
+                "playlisttracks": [
+                  {
+                    "playlist": {
+                      "name": "Music"
+                    }
+                  },
+                  {
+                    "playlist": {
+                      "name": "Music"
+                    }
+                  }
+                ],
+                "album": {
+                  "title": "The Best Of R.E.M.: The IRS Years",
+                  "artist": {
+                    "name": "R.E.M."
+                  }
+                }
+              }
+            }
+          },
+          {
+            "total": 3.98,
+            "invoicelines": {
+              "unitprice": 0.99,
+              "quantity": 1,
+              "track": {
+                "name": "União Da Ilha",
+                "milliseconds": 330945,
+                "mediatype": {
+                  "name": "MPEG audio file"
+                },
+                "genre": {
+                  "name": "Latin"
+                },
+                "playlisttracks": [
+                  {
+                    "playlist": {
+                      "name": "Music"
+                    }
+                  },
+                  {
+                    "playlist": {
+                      "name": "Music"
+                    }
+                  }
+                ],
+                "album": {
+                  "title": "Sambas De Enredo 2001",
+                  "artist": {
+                    "name": "Various Artists"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "total": 3.96,
+            "invoicelines": {
+              "unitprice": 0.99,
+              "quantity": 1,
+              "track": {
+                "name": "Born To Move",
+                "milliseconds": 342804,
+                "mediatype": {
+                  "name": "MPEG audio file"
+                },
+                "genre": {
+                  "name": "Rock"
+                },
+                "playlisttracks": [
+                  {
+                    "playlist": {
+                      "name": "Music"
+                    }
+                  },
+                  {
+                    "playlist": {
+                      "name": "Music"
+                    }
+                  }
+                ],
+                "album": {
+                  "title": "Chronicle, Vol. 2",
+                  "artist": {
+                    "name": "Creedence Clearwater Revival"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "total": 5.94,
+            "invoicelines": {
+              "unitprice": 0.99,
+              "quantity": 1,
+              "track": {
+                "name": "Esquinas",
+                "milliseconds": 280999,
+                "mediatype": {
+                  "name": "MPEG audio file"
+                },
+                "genre": {
+                  "name": "Latin"
+                },
+                "playlisttracks": [
+                  {
+                    "playlist": {
+                      "name": "Music"
+                    }
+                  },
+                  {
+                    "playlist": {
+                      "name": "Music"
+                    }
+                  },
+                  {
+                    "playlist": {
+                      "name": "90’s Music"
+                    }
+                  },
+                  {
+                    "playlist": {
+                      "name": "Brazilian Music"
+                    }
+                  }
+                ],
+                "album": {
+                  "title": "Djavan Ao Vivo - Vol. 02",
+                  "artist": {
+                    "name": "Djavan"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "total": 0.99,
+            "invoicelines": {
+              "unitprice": 0.99,
+              "quantity": 1,
+              "track": {
+                "name": "Don't Damn Me",
+                "milliseconds": 318901,
+                "mediatype": {
+                  "name": "Protected AAC audio file"
+                },
+                "genre": {
+                  "name": "Rock"
+                },
+                "playlisttracks": [
+                  {
+                    "playlist": {
+                      "name": "Music"
+                    }
+                  },
+                  {
+                    "playlist": {
+                      "name": "Music"
+                    }
+                  },
+                  {
+                    "playlist": {
+                      "name": "90’s Music"
+                    }
+                  }
+                ],
+                "album": {
+                  "title": "Use Your Illusion I",
+                  "artist": {
+                    "name": "Guns N' Roses"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "total": 1.98,
+            "invoicelines": {
+              "unitprice": 0.99,
+              "quantity": 1,
+              "track": {
+                "name": "All Within My Hands",
+                "milliseconds": 527986,
+                "mediatype": {
+                  "name": "MPEG audio file"
+                },
+                "genre": {
+                  "name": "Metal"
+                },
+                "playlisttracks": [
+                  {
+                    "playlist": {
+                      "name": "Music"
+                    }
+                  },
+                  {
+                    "playlist": {
+                      "name": "Music"
+                    }
+                  }
+                ],
+                "album": {
+                  "title": "St. Anger",
+                  "artist": {
+                    "name": "Metallica"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
+#+end_example
