@@ -11,7 +11,7 @@ database.
 * Why
 
 The objective is to learn more about PostgreSQL Foreign Data Wrappers
-(FDW) and how they interact with Harura.
+(FDW) and how they interact with Hasura.
 
 * How
 
