@@ -10,7 +10,7 @@ database.
 
 * Why
 
-The object is to learn more about PostgreSQL Foreign Data Wrappers
+The objective is to learn more about PostgreSQL Foreign Data Wrappers
 (FDW) and how they interact with Harura.
 
 * How
