@@ -21,3 +21,47 @@ array_relationships:
         remote_table:
           name: track
           schema: chinook
+event_triggers:
+  - name: album_delete
+    definition:
+      delete:
+        columns: '*'
+      enable_manual: false
+    retry_conf:
+      interval_sec: 10
+      num_retries: 0
+      timeout_sec: 60
+    webhook: https://{{ALGOLIA_APPLICATION_ID}}-dsn.algolia.net/1/indexes/album/
+    request_transform:
+      method: DELETE
+      query_params: {}
+      template_engine: Kriti
+      url: '{{$base_url}}{{$body.event.data.old.albumid}}'
+      version: 2
+  - name: album_insert_update
+    definition:
+      enable_manual: true
+      insert:
+        columns: '*'
+      update:
+        columns:
+          - title
+    retry_conf:
+      interval_sec: 10
+      num_retries: 0
+      timeout_sec: 60
+    webhook: https://{{ALGOLIA_APPLICATION_ID}}-dsn.algolia.net/1/indexes/album/
+    headers:
+      - name: X-Algolia-API-Key
+        value_from_env: ALGOLIA_ADMIN_API_KEY
+      - name: X-Algolia-Application-Id
+        value_from_env: ALGOLIA_APPLICATION_ID
+    request_transform:
+      body:
+        action: transform
+        template: '{"name": {{$body.event.data.new.title}}}'
+      method: PUT
+      query_params: {}
+      template_engine: Kriti
+      url: '{{$base_url}}{{$body.event.data.new.albumid}}'
+      version: 2

@@ -1,13 +1,37 @@
 actions:
+  - name: search_album
+    definition:
+      kind: ""
+      handler: https://{{ALGOLIA_APPLICATION_ID}}-dsn.algolia.net/1/indexes/album/query
+      headers:
+        - name: X-Algolia-API-Key
+          value_from_env: ALGOLIA_ADMIN_API_KEY
+        - name: X-Algolia-Application-Id
+          value_from_env: ALGOLIA_APPLICATION_ID
+      request_transform:
+        body:
+          action: transform
+          template: '{ "params": "query={{$body.input.query}}" }'
+        method: POST
+        query_params: {}
+        template_engine: Kriti
+        version: 2
+      response_transform:
+        body:
+          action: transform
+          template: '{{$body.hits}}'
+        template_engine: Kriti
+        version: 2
+    comment: seartch album index
   - name: search_artist
     definition:
       kind: ""
-      handler: https://2QU6OHSJH8-dsn.algolia.net/1/indexes/artist/query
+      handler: https://{{ALGOLIA_APPLICATION_ID}}-dsn.algolia.net/1/indexes/artist/query
       headers:
         - name: X-Algolia-API-Key
-          value: e1047d0781c52680b5f5510efbe3a819
+          value_from_env: ALGOLIA_ADMIN_API_KEY
         - name: X-Algolia-Application-Id
-          value: 2QU6OHSJH8
+          value_from_env: ALGOLIA_APPLICATION_ID
       request_transform:
         body:
           action: transform
@@ -23,6 +47,30 @@ actions:
         template_engine: Kriti
         version: 2
     comment: seartch artist index
+  - name: search_track
+    definition:
+      kind: ""
+      handler: https://{{ALGOLIA_APPLICATION_ID}}-dsn.algolia.net/1/indexes/track/query
+      headers:
+        - name: X-Algolia-API-Key
+          value_from_env: ALGOLIA_ADMIN_API_KEY
+        - name: X-Algolia-Application-Id
+          value_from_env: ALGOLIA_APPLICATION_ID
+      request_transform:
+        body:
+          action: transform
+          template: '{ "params": "query={{$body.input.query}}" }'
+        method: POST
+        query_params: {}
+        template_engine: Kriti
+        version: 2
+      response_transform:
+        body:
+          action: transform
+          template: '{{$body.hits}}'
+        template_engine: Kriti
+        version: 2
+    comment: seartch track index
 custom_types:
   enums: []
   input_objects: []
@@ -40,6 +88,22 @@ custom_types:
           name: artist
           remote_table:
             name: artist
+            schema: chinook
+          source: default
+          type: object
+        - field_mapping:
+            objectID: albumid
+          name: album
+          remote_table:
+            name: album
+            schema: chinook
+          source: default
+          type: object
+        - field_mapping:
+            objectID: trackid
+          name: track
+          remote_table:
+            name: track
             schema: chinook
           source: default
           type: object

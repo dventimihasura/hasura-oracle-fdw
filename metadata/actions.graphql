@@ -1,5 +1,17 @@
 type Query {
+  search_album(
+    query: String!
+  ): [Hit]!
+}
+
+type Query {
   search_artist(
+    query: String!
+  ): [Hit]!
+}
+
+type Query {
+  search_track(
     query: String!
   ): [Hit]!
 }
