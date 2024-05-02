@@ -1,7 +1,7 @@
 type Query {
   search_artist(
     query: String!
-  ): SearchProductsOutput
+  ): [Hit]!
 }
 
 type SearchProductsOutput {
@@ -43,5 +43,10 @@ type Name {
 
 type ProcessingTimingsMs {
   total: Int
+}
+
+type Hit {
+  name: String
+  objectID: Int
 }
 

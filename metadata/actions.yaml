@@ -16,6 +16,12 @@ actions:
         query_params: {}
         template_engine: Kriti
         version: 2
+      response_transform:
+        body:
+          action: transform
+          template: '{{$body.hits}}'
+        template_engine: Kriti
+        version: 2
     comment: seartch artist index
 custom_types:
   enums: []
@@ -27,4 +33,14 @@ custom_types:
     - name: HighlightResult
     - name: Name
     - name: ProcessingTimingsMs
+    - name: Hit
+      relationships:
+        - field_mapping:
+            objectID: artistid
+          name: artist
+          remote_table:
+            name: artist
+            schema: chinook
+          source: default
+          type: object
   scalars: []

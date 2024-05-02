@@ -10,3 +10,10 @@ X-Algolia-API-Key: :ALGOLIA_ADMIN_API_KEY
 X-Algolia-Application-Id: :ALGOLIA_APPLICATION_ID
 
 {"name": "AC/DC"}
+
+#
+POST https://:ALGOLIA_APPLICATION_ID-dsn.algolia.net/1/indexes/artist/query
+X-Algolia-API-Key: :ALGOLIA_ADMIN_API_KEY
+X-Algolia-Application-Id: :ALGOLIA_APPLICATION_ID
+
+{"params": "query=AC"}

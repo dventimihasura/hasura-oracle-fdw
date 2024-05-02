@@ -12,11 +12,30 @@ array_relationships:
           name: album
           schema: chinook
 event_triggers:
+  - name: artist_delete
+    definition:
+      delete:
+        columns: '*'
+      enable_manual: false
+    retry_conf:
+      interval_sec: 10
+      num_retries: 0
+      timeout_sec: 60
+    webhook: https://2QU6OHSJH8-dsn.algolia.net/1/indexes/artist/
+    request_transform:
+      method: DELETE
+      query_params: {}
+      template_engine: Kriti
+      url: '{{$base_url}}{{$body.event.data.old.artistid}}'
+      version: 2
   - name: artist_insert
     definition:
       enable_manual: true
       insert:
         columns: '*'
+      update:
+        columns:
+          - name
     retry_conf:
       interval_sec: 10
       num_retries: 0
