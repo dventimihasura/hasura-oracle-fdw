@@ -1,0 +1,12 @@
+# -*- mode: restclient; -*-
+
+:ALGOLIA_APPLICATION_ID = 2QU6OHSJH8
+:ALGOLIA_ADMIN_API_KEY = e1047d0781c52680b5f5510efbe3a819
+:ALGOLIA_SEARCH_ONLY_API_KEY = 6090c2dca3d5e51493bd5aa8f710564e
+
+#
+PUT https://:ALGOLIA_APPLICATION_ID-dsn.algolia.net/1/indexes/artist/1
+X-Algolia-API-Key: :ALGOLIA_ADMIN_API_KEY
+X-Algolia-Application-Id: :ALGOLIA_APPLICATION_ID
+
+{"name": "AC/DC"}
