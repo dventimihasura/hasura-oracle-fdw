@@ -475,7 +475,7 @@ that the following commands require [[https://www.gnu.org/software/parallel/][GN
 
 ** Step 4:  Try out a full-text search.
 
-#+begin_src graphql :url http://localhost:8081/v1/graphql
+#+begin_src graphql :url http://localhost:8081/v1/graphql :exports both
 query {
   search_artist(query: "Red") {
     artist {
@@ -508,7 +508,7 @@ query {
 }
 #+end_example
 
-#+begin_src graphql :url http://localhost:8081/v1/graphql
+#+begin_src graphql :url http://localhost:8081/v1/graphql :exports both
 query {
   search_album(query: "One") {
     album {
@@ -553,7 +553,7 @@ query {
 }
 #+end_example
 
-#+begin_src graphql :url http://localhost:8081/v1/graphql
+#+begin_src graphql :url http://localhost:8081/v1/graphql :exports both
 query {
   search_track(query: "First") {
     track {
