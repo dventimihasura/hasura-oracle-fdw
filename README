@@ -405,3 +405,189 @@ query MyQuery {
   }
 }
 #+end_example
+
+* BONUS:  Full-text search, Custom Events, and Actions
+
+There's now a bonus part of this POC, which illustrates Hasura Events
+and Actions in order to offer full-text search with a cloud-based
+search service.
+
+Hasura events are attached to the ~chinook_artist~, ~chinook_album~,
+and ~chinook_track~ foreign tables, which send inserts, updates, and
+deletes to a cloud-based search service, [[https://www.algolia.com/][Algolia]].  Hasura actions are
+also set up to then /search/ Algolia, and the results are turned into
+GraphQL and merged into the API.
+
+To use these features, follow these additional steps.
+
+** Step 1:  Get set up with Algolia.
+
+Create an Algolia account, and within it create a "search" type
+appliction (it's free).  For that application, create and obtain:
+
+- Application ID :: identifies the application
+- Search-Only API Key :: public API key to use in frontend code only
+  for search queries
+- Admin API Key :: secret API key to use in backend code only for
+  insert, update, and delete operations on search indices
+
+** Step 2:  Add Algolia API keys to ~.env~ file.
+
+#+begin_src bash
+  cat <<EOF >> .env
+  ALGOLIA_ADMIN_API_KEY=<your Algolia Admin API key>
+  ALGOLIA_APPLICATION_ID=<your Algolia Application Id>
+  ALGOLIA_SEARCH_ONLY_API_KEY=<your Algolia Search Only API key>
+  EOF
+#+end_src
+
+** Step 3:  Generate events
+
+The Algolia search indices will be created and maintained by DML that
+occurs on the PostgreSQL foreign tables.  However, we probably want
+there to be searchable indices available right after the application
+is started.  To achieve that, one way is simply to invoke the event
+handlers "manually" for every Artist, Album, and Track.  This can be
+done with a handful of GraphQL queries whose results are massaged and
+then fed back to Hasura's [[https://hasura.io/docs/latest/api-reference/metadata-api/event-triggers/#metadata-pg-invoke-event-trigger][pg_invoke_event_trigger]] API endpoint.  Note
+that the following commands require [[https://www.gnu.org/software/parallel/][GNU Parallel]], [[https://curl.se/][curl]], and [[https://jqlang.github.io/jq/][jq]].
+
+#+begin_src bash :results output
+  curl -s http://localhost:8081/v1/graphql -d '{"query":"query{chinook_artist{artistid name}}","variables":{}}' \
+      | jq -c '.data.chinook_artist[]|{"type":"pg_invoke_event_trigger","args": {"name":"artist_insert_update","source":"default","payload": .}}' \
+      | parallel curl -s http://localhost:8081/v1/metadata -d {} \
+      | jq -c '.'
+#+end_src
+
+#+begin_src bash :results output
+  curl -s http://localhost:8081/v1/graphql -d '{"query":"query{chinook_album{albumid title}}","variables":{}}' \
+      | jq -c '.data.chinook_album[]|{"type":"pg_invoke_event_trigger","args": {"name":"album_insert_update","source":"default","payload": .}}' \
+      | parallel curl -s http://localhost:8081/v1/metadata -d {} \
+      | jq -c '.'
+#+end_src
+
+#+begin_src bash :results output
+  curl -s http://localhost:8081/v1/graphql -d '{"query":"query{chinook_track{trackid name}}","variables":{}}' \
+      | jq -c '.data.chinook_track[]|{"type":"pg_invoke_event_trigger","args": {"name":"track_insert_update","source":"default","payload": .}}' \
+      | parallel curl -s http://localhost:8081/v1/metadata -d {} \
+      | jq -c '.'
+#+end_src
+
+** Step 4:  Try out a full-text search.
+
+#+begin_src graphql :url http://localhost:8081/v1/graphql
+query {
+  search_artist(query: "Red") {
+    artist {
+      artistid
+      name
+    }
+  }
+}
+#+end_src
+
+#+RESULTS:
+#+begin_example
+{
+  "data": {
+    "search_artist": [
+      {
+        "artist": {
+          "artistid": 127,
+          "name": "Red Hot Chili Peppers"
+        }
+      },
+      {
+        "artist": {
+          "artistid": 129,
+          "name": "Simply Red"
+        }
+      }
+    ]
+  }
+}
+#+end_example
+
+#+begin_src graphql :url http://localhost:8081/v1/graphql
+query {
+  search_album(query: "One") {
+    album {
+      albumid
+      title
+    }
+  }
+}
+#+end_src
+
+#+RESULTS:
+#+begin_example
+{
+  "data": {
+    "search_album": [
+      {
+        "album": {
+          "albumid": 81,
+          "title": "One By One"
+        }
+      },
+      {
+        "album": {
+          "albumid": 5,
+          "title": "Big Ones"
+        }
+      },
+      {
+        "album": {
+          "albumid": 96,
+          "title": "A Real Live One"
+        }
+      },
+      {
+        "album": {
+          "albumid": 95,
+          "title": "A Real Dead One"
+        }
+      }
+    ]
+  }
+}
+#+end_example
+
+#+begin_src graphql :url http://localhost:8081/v1/graphql
+query {
+  search_track(query: "First") {
+    track {
+      trackid
+      name
+    }
+  }
+}
+#+end_src
+
+#+RESULTS:
+#+begin_example
+{
+  "data": {
+    "search_track": [
+      {
+        "track": {
+          "trackid": 194,
+          "name": "First Time I Met The Blues"
+        }
+      },
+      {
+        "track": {
+          "trackid": 3448,
+          "name": "Lamentations of Jeremiah, First Set \\ Incipit Lamentatio"
+        }
+      },
+      {
+        "track": {
+          "trackid": 1163,
+          "name": "You Ain't the First"
+        }
+      }
+    ]
+  }
+}
+#+end_example
